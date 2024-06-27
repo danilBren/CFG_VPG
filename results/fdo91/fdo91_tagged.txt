@@ -1,0 +1,47 @@
+grammar fdo91_tagged.txt;
+
+
+file_
+	: atom* EOF
+	;
+
+atom
+	: 'atom$'? command _new_rule_1?
+	;
+
+_new_rule_1
+	: arglist
+	| literal_args
+	;
+
+literal_args
+	: literal+
+	;
+
+literal
+	: STRING
+	| GID
+	| NUMBER
+	| ID
+	;
+
+arglist
+	: <'<' _L_arg__new_rule_2^STAR '>'>
+	;
+
+_L_arg__new_rule_2^STAR
+	: arg _new_rule_2*
+	;
+
+_new_rule_2
+	: ',' arg
+	;
+
+arg
+	: atom+
+	| literal
+	;
+
+command
+	: ID
+	;

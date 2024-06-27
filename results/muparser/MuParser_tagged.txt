@@ -1,0 +1,87 @@
+grammar MuParser_tagged.txt;
+
+
+prog
+	: expr+ EOF
+	;
+
+expr
+	: FUNCTION <OPAR expr CPAR> expr`
+	| atom expr`
+	| FUNCTIONMULTI <OPAR _L_expr__new_rule_5^STAR CPAR> expr`
+	| SUB expr expr`
+	| ID _new_rule_6 expr expr`
+	;
+
+_new_rule_6
+	: ASSIGNADD
+	| ASSIGNMUL
+	| ASSIGN
+	| ASSIGNDIV
+	| ASSIGNSUB
+	;
+
+_L_expr__new_rule_5^STAR
+	: expr _new_rule_5*
+	;
+
+_new_rule_5
+	: ',' expr
+	;
+
+atom
+	: _new_rule_8
+	| <OPAR expr CPAR>
+	| _new_rule_7
+	| _new_rule_9
+	| ID
+	;
+
+_new_rule_9
+	: E
+	| PI
+	;
+
+_new_rule_7
+	: FLOAT
+	| INT
+	;
+
+_new_rule_8
+	: TRUE
+	| FALSE
+	;
+
+expr`
+	:
+	| _new_rule_4 expr expr`
+	| _new_rule_3 expr expr`
+	| AND expr expr`
+	| <QUESTION expr COLON> expr expr`
+	| POW expr expr`
+	| _new_rule_1 expr expr`
+	| _new_rule_2 expr expr`
+	| OR expr expr`
+	;
+
+_new_rule_2
+	: SUB
+	| ADD
+	;
+
+_new_rule_1
+	: DIV
+	| MUL
+	;
+
+_new_rule_3
+	: GT
+	| GTEQ
+	| LT
+	| LTEQ
+	;
+
+_new_rule_4
+	: NEQ
+	| EQ
+	;

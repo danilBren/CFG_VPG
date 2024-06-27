@@ -1,0 +1,141 @@
+grammar refal_tagged.txt;
+
+
+file_
+	: program EOF
+	;
+
+program
+	: f_definition _new_rule_1? program`
+	| external_decl ';' program program`
+	;
+
+external_decl
+	: _new_rule_2 f_name_list
+	;
+
+f_name_list
+	: f_name _new_rule_3?
+	;
+
+_new_rule_3
+	: ',' f_name_list ';'
+	;
+
+f_name
+	: identifier
+	;
+
+identifier
+	: IDENTIFER
+	| STRING
+	;
+
+_new_rule_2
+	: '$EXTRN'
+	| '$EXTERN'
+	| '$EXTERNAL'
+	;
+
+program`
+	:
+	| external_decl ';' program`
+	;
+
+_new_rule_1
+	: ';'? program
+	;
+
+f_definition
+	: '$ENTRY'? f_name <'{' block_ '}'>
+	;
+
+block_
+	: sentence _new_rule_4?
+	;
+
+_new_rule_4
+	: ';' block_?
+	;
+
+sentence
+	: left_side conditions _new_rule_5
+	;
+
+_new_rule_5
+	: '=' right_side
+	| ',' block_ending
+	;
+
+block_ending
+	: arg_ ':' <'{' block_ '}'>
+	;
+
+arg_
+	: expression_
+	;
+
+expression_
+	: _new_rule_7?
+	;
+
+_new_rule_7
+	: term_ expression_
+	;
+
+term_
+	: symbol
+	| <'<' expression_ '>'>
+	| variable
+	;
+
+variable
+	: tvar
+	| svar
+	| evar
+	;
+
+evar
+	: 'e' '.' index
+	;
+
+index
+	: DIGITS
+	| identifier
+	;
+
+svar
+	: 's' '.' index
+	;
+
+tvar
+	: 't' '.' index
+	;
+
+symbol
+	: STRING2
+	| DIGITS
+	| STRING
+	| CHAR
+	| identifier
+	;
+
+right_side
+	: expression_
+	;
+
+conditions
+	: _new_rule_6?
+	;
+
+_new_rule_6
+	: ',' arg_ ':' pattern conditions
+	;
+
+pattern
+	: expression_
+	;
+
+left_side
+	: pattern
+	;

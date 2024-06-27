@@ -1,0 +1,203 @@
+grammar lisa_tagged.txt;
+
+
+program
+	: declaration_block program_block EOF
+	;
+
+program_block
+	: 'program' <'{' statements '}'>
+	;
+
+statements
+	: statement+
+	;
+
+statement
+	: generating_statement
+	| if_statement
+	| expression_statement
+	| while_statement
+	| _new_rule_1
+	| _new_rule_2
+	;
+
+_new_rule_2
+	: 'continue' ';'
+	;
+
+_new_rule_1
+	: 'break' ';'
+	;
+
+while_statement
+	: WHILE <'(' expression ')'> statement
+	;
+
+expression
+	: simple_expression
+	| _new_rule_3
+	;
+
+_new_rule_3
+	: variable _new_rule_4*
+	;
+
+_new_rule_4
+	: exprop expression
+	;
+
+exprop
+	: '+='
+	| '='
+	| '/='
+	| '-+'
+	| '*='
+	;
+
+variable
+	: ID
+	;
+
+simple_expression
+	: or_expression _new_rule_5*
+	;
+
+_new_rule_5
+	: '||' or_expression
+	;
+
+or_expression
+	: unary_relationexpression _new_rule_6*
+	;
+
+_new_rule_6
+	: '&&' unary_relationexpression
+	;
+
+unary_relationexpression
+	: '!'? relation_expression
+	;
+
+relation_expression
+	: add_expression _new_rule_7*
+	;
+
+_new_rule_7
+	: relop add_expression
+	;
+
+relop
+	: '<='
+	| '!='
+	| '>'
+	| '>='
+	| '=='
+	;
+
+add_expression
+	: term _new_rule_8*
+	;
+
+_new_rule_8
+	: addop term
+	;
+
+addop
+	: '+'
+	| '-'
+	;
+
+term
+	: factor _new_rule_9*
+	;
+
+_new_rule_9
+	: multop factor
+	;
+
+multop
+	: '/'
+	| '%'
+	| '*'
+	;
+
+factor
+	: <'(' simple_expression ')'>
+	| constant
+	;
+
+constant
+	: variable
+	| function_
+	| FALSE
+	| type_
+	| integer
+	| 'hasnext'
+	| STRINGLITERAL
+	| 'next'
+	| TRUE
+	;
+
+integer
+	: _new_rule_10? INTEGER
+	;
+
+_new_rule_10
+	: '+'
+	| '-'
+	;
+
+type_
+	: 'dfa'
+	| 'nfa'
+	| 'regex'
+	| 'string'
+	| 'bool'
+	| 'int'
+	;
+
+function_
+	: ID <'(' parameter_list ')'>
+	;
+
+parameter_list
+	: simple_expression _new_rule_11*
+	;
+
+_new_rule_11
+	: ',' simple_expression
+	;
+
+expression_statement
+	: expression ';'
+	;
+
+if_statement
+	: 'if' <'(' expression ')'> statement
+	;
+
+generating_statement
+	: 'generate' <'(' _L_generator_type_','_'int'_','_'int' ')'> statement
+	;
+
+_L_generator_type_','_'int'_','_'int'
+	: generator_type ',' 'int' ',' 'int'
+	;
+
+generator_type
+	: 'enumerate'
+	| 'random'
+	;
+
+declaration_block
+	: 'declare' <'{' declaration_statements '}'>
+	;
+
+declaration_statements
+	: declaration_statement+
+	;
+
+declaration_statement
+	: type_ ID ';'
+	;

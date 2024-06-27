@@ -1,0 +1,155 @@
+grammar sgf_tagged.txt;
+
+
+collection
+	: gameTree+ EOF
+	;
+
+gameTree
+	: <'(' _L_sequence_gameTree^STAR ')'>
+	;
+
+_L_sequence_gameTree^STAR
+	: sequence gameTree*
+	;
+
+sequence
+	: node+
+	;
+
+node
+	: ';' property_*
+	;
+
+property_
+	: move
+	| gameInfo
+	| go_
+	| moveAnnotation
+	| setup
+	| privateProp
+	| root
+	| misc
+	| timing
+	| loa
+	| markup
+	| nodeAnnotation
+	;
+
+nodeAnnotation
+	: 'V' TEXT
+	| 'DM' TEXT
+	| 'GB' TEXT
+	| 'HO' TEXT
+	| 'N' TEXT
+	| 'C' TEXT
+	| 'GW' TEXT
+	| 'UC' TEXT
+	;
+
+markup
+	: 'LB' TEXT+
+	| 'LN' TEXT+
+	| 'SQ' TEXT+
+	| 'AR' TEXT+
+	| 'DD' _new_rule_2
+	| 'MA' TEXT+
+	| 'TR' TEXT+
+	| 'SL' TEXT+
+	| 'CR' TEXT+
+	;
+
+_new_rule_2
+	: TEXT+
+	| NONE
+	;
+
+loa
+	: 'SE' TEXT
+	| 'IP' TEXT
+	| 'AS' TEXT
+	| 'IY' TEXT
+	| 'SU' TEXT
+	;
+
+timing
+	: 'OB' TEXT
+	| 'WL' TEXT
+	| 'OW' TEXT
+	| 'BL' TEXT
+	;
+
+misc
+	: 'PM' TEXT
+	| 'VW' TEXT+
+	| 'FG' _new_rule_1
+	;
+
+_new_rule_1
+	: TEXT
+	| NONE
+	;
+
+root
+	: 'GM' TEXT
+	| 'FF' TEXT
+	| 'CA' TEXT
+	| 'AP' TEXT
+	| 'ST' TEXT
+	| 'SZ' TEXT
+	;
+
+privateProp
+	: UCLETTER _new_rule_2
+	;
+
+setup
+	: 'PL' TEXT
+	| 'AB' TEXT+
+	| 'AE' TEXT+
+	| 'AW' TEXT+
+	;
+
+moveAnnotation
+	: 'TE' TEXT
+	| 'DO' NONE
+	| 'BM' TEXT
+	| 'IT' NONE
+	;
+
+go_
+	: 'KM' TEXT
+	| 'TW' _new_rule_2
+	| 'HA' TEXT
+	| 'TB' _new_rule_2
+	;
+
+gameInfo
+	: 'BT' TEXT
+	| 'PW' TEXT
+	| 'ON' TEXT
+	| 'OT' TEXT
+	| 'AN' TEXT
+	| 'PC' TEXT
+	| 'CP' TEXT
+	| 'EV' TEXT
+	| 'TM' TEXT
+	| 'WR' TEXT
+	| 'BR' TEXT
+	| 'RO' TEXT
+	| 'PB' TEXT
+	| 'WT' TEXT
+	| 'GC' TEXT
+	| 'DT' TEXT
+	| 'RU' TEXT
+	| 'US' TEXT
+	| 'RE' TEXT
+	| 'GN' TEXT
+	| 'SO' TEXT
+	;
+
+move
+	: COLOR _new_rule_1
+	| 'MN' TEXT
+	| 'KO' NONE
+	;

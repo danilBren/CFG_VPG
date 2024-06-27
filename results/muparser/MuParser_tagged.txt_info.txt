@@ -1,0 +1,4 @@
+call	[OPAR, QUESTION]
+ret 	[COLON, CPAR]
+pairs: 	[(QUESTION, COLON), (OPAR, CPAR)]
+Invalid

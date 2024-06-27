@@ -1,0 +1,4 @@
+call	[LPAREN]
+ret 	[RPAREN]
+pairs: 	[(LPAREN, RPAREN)]
+Invalid

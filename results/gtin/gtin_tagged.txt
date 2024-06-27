@@ -1,0 +1,205 @@
+grammar gtin_tagged.txt;
+
+
+gtin
+	: _new_rule_1 EOF
+	;
+
+_new_rule_1
+	: gtin13
+	| gtin14
+	| gtin8
+	| supplemental_code
+	| gtin12
+	;
+
+gtin12
+	: upc
+	;
+
+upc
+	: _new_rule_2
+	;
+
+_new_rule_2
+	: upc_e
+	| upc_a
+	;
+
+upc_a
+	: num_system upc_a_manufacturer upc_a_product check_code
+	;
+
+check_code
+	: any_digit
+	;
+
+any_digit
+	: DIGIT_6
+	| DIGIT_7
+	| DIGIT_4
+	| DIGIT_9
+	| DIGIT_0
+	| DIGIT_2
+	| DIGIT_1
+	| DIGIT_5
+	| DIGIT_8
+	| DIGIT_3
+	;
+
+upc_a_product
+	: upc_a_5
+	;
+
+upc_a_5
+	: any_digit any_digit any_digit any_digit any_digit
+	;
+
+upc_a_manufacturer
+	: upc_a_5
+	;
+
+num_system
+	: any_digit
+	;
+
+upc_e
+	: any_digit any_digit any_digit any_digit any_digit any_digit
+	;
+
+supplemental_code
+	: supplemental_code_5
+	| supplemental_code_2
+	;
+
+supplemental_code_2
+	: any_digit any_digit
+	;
+
+supplemental_code_5
+	: any_digit any_digit any_digit any_digit any_digit
+	;
+
+gtin8
+	: ean8
+	;
+
+ean8
+	: any_digit any_digit any_digit any_digit any_digit any_digit any_digit any_digit
+	;
+
+gtin14
+	: ean14
+	;
+
+ean14
+	: ean14_packaging ean14_product check_code
+	;
+
+ean14_product
+	: any_digit any_digit any_digit any_digit any_digit any_digit any_digit any_digit any_digit any_digit any_digit any_digit
+	;
+
+ean14_packaging
+	: _new_rule_6
+	;
+
+_new_rule_6
+	: '7'
+	| '3'
+	| '8'
+	| '1'
+	| '5'
+	| '4'
+	| '6'
+	| '0'
+	| '2'
+	;
+
+gtin13
+	: ean13
+	;
+
+ean13
+	: _new_rule_3
+	;
+
+_new_rule_3
+	: ean13_ismn
+	| ean13_issn
+	| ean13_bookland
+	| ean13_generic
+	;
+
+ean13_generic
+	: gs1_prefix ean_13_manprod check_code
+	;
+
+ean_13_manprod
+	: any_digit any_digit any_digit any_digit any_digit any_digit any_digit any_digit any_digit
+	;
+
+gs1_prefix
+	: any_digit any_digit any_digit
+	;
+
+ean13_bookland
+	: _new_rule_4 bookland_isbn
+	;
+
+bookland_isbn
+	: any_digit any_digit any_digit any_digit any_digit any_digit any_digit any_digit any_digit
+	;
+
+_new_rule_4
+	: gs1_prefix_bookland_2
+	| gs1_prefix_bookland_1
+	;
+
+gs1_prefix_bookland_1
+	: '9' '7' '9' _new_rule_5
+	;
+
+_new_rule_5
+	: '7'
+	| '3'
+	| '9'
+	| '8'
+	| '1'
+	| '5'
+	| '4'
+	| '6'
+	| '2'
+	;
+
+gs1_prefix_bookland_2
+	: '9' '7' '8' any_digit
+	;
+
+ean13_issn
+	: gs1_prefix_issn issn check_code
+	;
+
+issn
+	: any_digit any_digit any_digit any_digit any_digit any_digit any_digit any_digit any_digit
+	;
+
+gs1_prefix_issn
+	: '9' '7' '7'
+	;
+
+ean13_ismn
+	: gs1_prefix_ismn ismn_publisher_number ismn_item_number check_code
+	;
+
+ismn_item_number
+	: any_digit any_digit any_digit any_digit
+	;
+
+ismn_publisher_number
+	: any_digit any_digit any_digit any_digit
+	;
+
+gs1_prefix_ismn
+	: '9' '7' '9' '0'
+	;

@@ -1,0 +1,280 @@
+grammar snobol_tagged.txt;
+
+
+prog
+	: lin+ EOF
+	;
+
+lin
+	: line? EOL
+	;
+
+line
+	: _new_rule_4
+	| _new_rule_1
+	| _new_rule_3
+	;
+
+_new_rule_3
+	: COLON transfer
+	;
+
+transfer
+	: _new_rule_15?
+	;
+
+_new_rule_15
+	: transferpre? LPAREN _new_rule_16 RPAREN
+	;
+
+_new_rule_16
+	: END
+	| label
+	;
+
+label
+	: STRING
+	;
+
+transferpre
+	: _new_rule_17
+	;
+
+_new_rule_17
+	: 'f'
+	| 'F'
+	| 's'
+	| 'S'
+	;
+
+_new_rule_1
+	: label? subject pattern? _new_rule_2? _new_rule_3?
+	;
+
+_new_rule_2
+	: EQ expression+
+	;
+
+expression
+	: multiplyingExpression _new_rule_8*
+	;
+
+_new_rule_8
+	: _new_rule_9 multiplyingExpression
+	;
+
+_new_rule_9
+	: PLUS
+	| MINUS
+	;
+
+multiplyingExpression
+	: powExpression _new_rule_10*
+	;
+
+_new_rule_10
+	: _new_rule_11 powExpression
+	;
+
+_new_rule_11
+	: DIV
+	| TIMES
+	;
+
+powExpression
+	: atom _new_rule_12?
+	;
+
+_new_rule_12
+	: POW expression
+	;
+
+atom
+	: _new_rule_13
+	| subject
+	| <'[' _L_expression__new_rule_14^STAR ']'>
+	| command
+	| LPAREN expression RPAREN
+	;
+
+command
+	: table
+	| break_
+	| tan
+	| size
+	| lt
+	| eq
+	| trim
+	| differ
+	| array_
+	| le
+	| ne
+	| lgt
+	| exp
+	| ln
+	| ident
+	| cos
+	| reverse
+	| ge
+	| replace
+	| sort
+	| atan
+	| remdr
+	| chop
+	| sin
+	| dupl
+	| date
+	| integer
+	;
+
+integer
+	: 'integer' LPAREN expression RPAREN
+	;
+
+date
+	: 'date' LPAREN RPAREN
+	;
+
+dupl
+	: 'dupl' LPAREN expression COMMA expression RPAREN
+	;
+
+sin
+	: 'sin' LPAREN expression RPAREN
+	;
+
+chop
+	: 'chop' LPAREN expression RPAREN
+	;
+
+remdr
+	: 'remdr' LPAREN expression RPAREN
+	;
+
+atan
+	: 'atan' LPAREN expression RPAREN
+	;
+
+sort
+	: 'sort' LPAREN expression RPAREN
+	;
+
+replace
+	: 'replace' LPAREN expression COMMA expression COMMA expression RPAREN
+	;
+
+ge
+	: 'ge' LPAREN expression RPAREN
+	;
+
+reverse
+	: 'reverse' LPAREN expression RPAREN
+	;
+
+cos
+	: 'cos' LPAREN expression RPAREN
+	;
+
+ident
+	: 'ident' LPAREN expression RPAREN
+	;
+
+ln
+	: 'ln' LPAREN expression RPAREN
+	;
+
+exp
+	: 'exp' LPAREN expression RPAREN
+	;
+
+lgt
+	: 'lgt' LPAREN expression RPAREN
+	;
+
+ne
+	: 'ne' LPAREN expression RPAREN
+	;
+
+le
+	: 'le' LPAREN expression RPAREN
+	;
+
+array_
+	: 'array' LPAREN expression COMMA expression RPAREN
+	;
+
+differ
+	: 'differ' LPAREN expression RPAREN
+	;
+
+trim
+	: 'trim' LPAREN expression RPAREN
+	;
+
+eq
+	: 'eq' LPAREN expression RPAREN
+	;
+
+lt
+	: 'lt' LPAREN expression RPAREN
+	;
+
+size
+	: 'size' LPAREN expression RPAREN
+	;
+
+tan
+	: 'tan' LPAREN expression RPAREN
+	;
+
+break_
+	: 'break' LPAREN expression RPAREN
+	;
+
+table
+	: 'table' LPAREN expression RPAREN
+	;
+
+_L_expression__new_rule_14^STAR
+	: expression _new_rule_14*
+	;
+
+_new_rule_14
+	: ',' expression
+	;
+
+_new_rule_13
+	: STRINGLITERAL1
+	| INTEGER
+	| STRINGLITERAL2
+	;
+
+pattern
+	: STRINGLITERAL1
+	| STRINGLITERAL2
+	;
+
+subject
+	: _new_rule_5
+	;
+
+_new_rule_5
+	: AMP? STRING _new_rule_6?
+	;
+
+_new_rule_6
+	: <'[' _L_STRING__new_rule_7^STAR ']'>
+	;
+
+_L_STRING__new_rule_7^STAR
+	: STRING _new_rule_7*
+	;
+
+_new_rule_7
+	: ',' STRING
+	;
+
+_new_rule_4
+	: END
+	| COMMENT
+	;
