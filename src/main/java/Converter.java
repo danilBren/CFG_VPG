@@ -31,6 +31,7 @@ public class Converter {
     public static int validGrammars = 0;
     public static int grammarTooBig = 0;
     public static int validTagged = 0;
+    public static int validLR = 0;
 
     static Logger logger = Logger.getLogger(Converter.class.getName());
 
@@ -90,7 +91,6 @@ public class Converter {
             hadLR = true;
         }
 
-        grammar.countPairs();
         grammar.tagByPrecedence(true);
 
         //remove non-terminals that are not matched in rules
@@ -105,24 +105,27 @@ public class Converter {
 
         boolean valid = false;
 
-        if (grammar.getNotermCount() <= 1000) {
+        if (grammar.getNotermCount() <= 70) {
             var graph = new DepGraph(grammar);
             graph.findCycles();
             valid = graph.isValid();
         } else {
-            grammarTooBig ++;
+            grammarTooBig++;
         }
 
-            if (grammar.call.size() > 0) {
-                taggedGrammars += 1;
-                lrInVPGsCount += hadLR ? 1 : 0;
-                if (valid) {
-                    validTagged += 1;
+        if (grammar.call.size() > 0) {
+            taggedGrammars += 1;
+            lrInVPGsCount += hadLR ? 1 : 0;
+            if (valid) {
+                validTagged += 1;
+                if (hadLR) {
+                    validLR ++;
                 }
             }
-            if (valid) {
-                validGrammars++;
-            }
+        }
+        if (valid) {
+            validGrammars++;
+        }
 
 
         // write results to the result folder
@@ -207,12 +210,9 @@ public class Converter {
         Files.walk(Paths.get(grammars)).forEach(path -> {
 
             // uncomment this to test on a specific grammar that looks nice
-//            if (!path.endsWith("testing.g4")) {
-//                return;
-//            }
-            if (path.endsWith("informix.g4") || path.endsWith("modelica.g4")) {
-                return;
-            }
+//                        if (!path.endsWith("testing.g4")) {
+//                            return;
+//                        }
 
 
             if (path.toFile().isFile() && path.toString().endsWith(".g4") &&
@@ -260,6 +260,7 @@ public class Converter {
         System.out.println("Tagged grammars with LR: " + lrInVPGsCount);
         System.out.println("Valid grammars: " + validGrammars);
         System.out.println("Valid tagged: " + validTagged);
+        System.out.println("ValidLr " + validLR);
         System.out.println("skipped cause too big: " + grammarTooBig);
     }
 

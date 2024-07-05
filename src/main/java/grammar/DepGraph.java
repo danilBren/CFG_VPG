@@ -125,19 +125,16 @@ public class DepGraph {
 
     private boolean isCycleValid(List<Edge> cycle) {
         // check the 1st case
+
         for (var e : cycle) {
             if (e.s1.isEmpty() || e.s2.isEmpty()) {
                 continue;
             }
-            for (var c : grammar.call) {
-                if (e.s1.get(e.s1.size() - 1).equals(c)) {
-                    for (var r : grammar.ret) {
-                        if (e.s2.get(e.s2.size() - 1).equals(c)) {
-                            // 1st case: an edge is labeled
-                            // s1<aLb>s2
-                            return true;
-                        }
-                    }
+            if (grammar.call.contains(e.s1.get(e.s1.size() - 1))) {
+                if (grammar.ret.contains(e.s2.get(e.s2.size() - 1))) {
+                    // 1st case: an edge is labeled
+                    // s1<aLb>s2
+                    return true;
                 }
             }
         }

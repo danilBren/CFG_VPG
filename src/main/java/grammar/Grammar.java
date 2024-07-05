@@ -9,7 +9,6 @@ public class Grammar {
     public final ArrayList<Pair<Terminal, Terminal>> pairs;
     public Set<Terminal> call;
     public Set<Terminal> ret;
-    public Map<Pair<Terminal, Terminal>, Long> countedPairs;
 
     //set of terminals that have an EBNFSuffix
     private final Set<Terminal> onlyPlain;
@@ -76,10 +75,11 @@ public class Grammar {
         for (int i = 0; i < alt.size(); i++) {
             var c = alt.get(i);
             if (c.a instanceof Terminal) {
+                // check if there are other terminals in the rule
                 foundPair = false;
                 if (c.b == EbnfSuffix.NONE) {
                     int j = alt.size() - 1;
-                    while (j > i + 1) {
+                    while (j > i) {
                         var r = alt.get(j);
                         j--;
                         if (r.a instanceof Terminal && r.b == EbnfSuffix.NONE && !c.a.equals(r.a)) {
@@ -113,8 +113,8 @@ public class Grammar {
     /**
      * counts pairs and puts them in countedPairs map.
      */
-    public void countPairs() {
-        countedPairs = pairs.stream().collect(Collectors.groupingBy(e -> e, Collectors.counting()));
+    private Map<Pair<Terminal, Terminal>, Long> countPairs() {
+        return pairs.stream().collect(Collectors.groupingBy(e -> e, Collectors.counting()));
     }
 
     /**
@@ -124,8 +124,7 @@ public class Grammar {
     public void tagByPrecedence(boolean removeContradictions) {
         call = new HashSet<>();
         ret = new HashSet<>();
-
-        var counts = countedPairs.entrySet().stream().sorted(Map.Entry.comparingByValue());
+        var counts = countPairs().entrySet().stream().sorted(Map.Entry.comparingByValue());
 
         // stack with pairs sorted such that most frequent pairs are on top.
         Stack<Pair<Terminal, Terminal>> pairsStack = new Stack<>();
@@ -136,7 +135,6 @@ public class Grammar {
                     call.contains(pair.a) || ret.contains(pair.a) || call.contains(pair.b) ||
                     ret.contains(pair.b)) {
                 if (removeContradictions) {
-                    countedPairs.remove(pair);
                     pairs.removeAll(Collections.singleton(pair));
                 }
             } else {
@@ -283,6 +281,7 @@ public class Grammar {
         tagged.add(start);
         while (!toVisit.isEmpty()) {
             var g = toVisit.pop();
+            // returns a set of new nonTerminals encountered in this rule.
             var newRules = tagRule(g.rules);
             for (var nt : newRules) {
                 if (!tagged.contains(nt)) {
@@ -404,7 +403,7 @@ public class Grammar {
         boolean fst = true;
         for (ArrayList<Pair<Node, EbnfSuffix>> alternative : nt.rules) {
             if (fst) { // to have ':' at the 1st rule like in ANTLR
-                res.append("\n\t:");
+                res.append("\t:");
                 fst = false;
             } else {
                 res.append("\n\t|");
